@@ -39,31 +39,59 @@ func GetEmployeeDetails(w http.ResponseWriter, r *http.Request) {
 	var employees []Employee
 	result, err := Db.Query("SELECT department.Id, department.Name ,employee.Id, employee.Name,employee.Phone FROM employee INNER JOIN department ON employee.DepartmentId=department.Id;")
 	if err != nil {
-		return
-		//fmt.Errorf(err.Error())
+		log.Fatal(err.Error())
 	}
-	//defer func(result *sql.Rows) {
-	//	err := result.Close()
-	//	if err != nil {
-	//
-	//	}
-	//}(result)
+	defer result.Close()
 	for result.Next() {
 		var employee Employee
 		err := result.Scan(&employee.DeptDetails.DeptId, &employee.DeptDetails.DeptName, &employee.Id, &employee.Name, &employee.PhoneNo)
 		if err != nil {
-			//w.WriteHeader(http.StatusBadRequest)
-			return
+			log.Fatal(err.Error())
 		}
 		employees = append(employees, employee)
 	}
 	respBody, _ := json.Marshal(employees)
-	_, err = w.Write(respBody)
-	if err != nil {
-		return
-	}
-	w.WriteHeader(http.StatusOK)
+	w.Write(respBody)
+	//json.NewEncoder(w).Encode(employees)
+
 }
+
+//func GetEmployeeDetails(w http.ResponseWriter, r *http.Request) {
+//
+//	//var ID = r.URL.Query().Get("id")
+//
+//	w.Header().Set("Content-Type", "application/json")
+//
+//	var employees []Employee
+//	result, err := Db.Query("SELECT department.Id, department.Name ,employee.Id, employee.Name,employee.Phone FROM employee INNER JOIN department ON employee.DepartmentId=department.Id;")
+//	if err != nil {
+//		return
+//		//fmt.Errorf(err.Error())
+//	}
+//
+//	defer result.Close()
+//	//defer func(result *sql.Rows) {
+//	//	err := result.Close()
+//	//	if err != nil {
+//	//
+//	//	}
+//	//}(result)
+//	for result.Next() {
+//		var employee Employee
+//		err := result.Scan(&employee.DeptDetails.DeptId, &employee.DeptDetails.DeptName, &employee.Id, &employee.Name, &employee.PhoneNo)
+//		if err != nil {
+//			//w.WriteHeader(http.StatusBadRequest)
+//			return
+//		}
+//		employees = append(employees, employee)
+//	}
+//	respBody, _ := json.Marshal(employees)
+//	//_, err = w.Write(respBody)
+//	//if err != nil {
+//	//	return
+//	//}
+//	w.WriteHeader(http.StatusOK)
+//}
 
 func GetEmployeeDetailsById(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -183,7 +211,8 @@ func CreateDepartment(w http.ResponseWriter, r *http.Request) {
 }
 
 func connect() {
-	Db, err := sql.Open("mysql",
+	var err error
+	Db, err = sql.Open("mysql",
 		"mahak:mahak#1234@tcp(127.0.0.1:3306)/sample_db")
 	if err != nil {
 		log.Println(err)
