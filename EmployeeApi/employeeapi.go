@@ -22,10 +22,10 @@ type Department struct {
 }
 
 type Employee struct {
-	DeptDetails Department `json:"deptDetails""`
-	Id          string     `json:"id""`
-	Name        string     `json:"name""`
-	PhoneNo     string     `json:"phone_no""`
+	DeptDetails Department `json:"deptDetails"`
+	Id          string     `json:"id"`
+	Name        string     `json:"name"`
+	PhoneNo     string     `json:"phone_no"`
 }
 
 var Db *sql.DB
@@ -73,6 +73,12 @@ func GetEmployeeDetailsById(w http.ResponseWriter, r *http.Request) {
 
 func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 	var emp Employee
+	w.Header().Set("Content-Type", "application/json")
+	req, _ := ioutil.ReadAll(r.Body)
+	_ = json.Unmarshal(req, &emp)
+	if err := json.Unmarshal(req, &emp); err != nil {
+		log.Println("Error is : ", err)
+	}
 
 	emp.Id = uuid2.NewString()
 	_, err := Db.Exec("insert into employee (ID, NAME,DepartmentID,PHONE) values (?,?,?,?)", emp.Id, emp.Name, emp.DeptDetails.DeptId,
@@ -81,13 +87,10 @@ func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = io.WriteString(w, "err")
+	} else {
+		w.WriteHeader(http.StatusCreated)
+		_, _ = io.WriteString(w, "Success")
 	}
-	w.Header().Set("Content-Type", "application/json")
-	req, _ := ioutil.ReadAll(r.Body)
-	_ = json.Unmarshal(req, &emp)
-
-	w.WriteHeader(http.StatusCreated)
-	_, _ = io.WriteString(w, "Success")
 }
 
 //func CreateEmployee(w http.ResponseWriter, r *http.Request) {
@@ -156,8 +159,15 @@ func GetDepartmentDetailsById(w http.ResponseWriter, r *http.Request) {
 
 func CreateDepartment(w http.ResponseWriter, r *http.Request) {
 	var dept Department
-	id := uuid2.NewString()
-	_, err := Db.Exec("insert into department (ID, NAME) values (?,?)", id, dept.DeptName)
+	w.Header().Set("Content-Type", "application/json")
+	req, _ := ioutil.ReadAll(r.Body)
+	if err := json.Unmarshal(req, &dept); err != nil {
+		log.Println("Error is : ", err)
+	}
+
+	dept.DeptId = uuid2.NewString()
+	_, err := Db.Exec("insert into department (ID, NAME) values (?,?)", dept.DeptId, dept.DeptName)
+	fmt.Println("error")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = io.WriteString(w, "Some error")
@@ -166,11 +176,6 @@ func CreateDepartment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_, _ = io.WriteString(w, "Success")
 
-	w.Header().Set("Content-Type", "application/json")
-	req, _ := ioutil.ReadAll(r.Body)
-	if err := json.Unmarshal(req, &dept); err != nil {
-		log.Println("Error is : ", err)
-	}
 }
 
 func connect() {
