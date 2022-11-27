@@ -75,7 +75,7 @@ func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 	var emp Employee
 	w.Header().Set("Content-Type", "application/json")
 	req, _ := ioutil.ReadAll(r.Body)
-	_ = json.Unmarshal(req, &emp)
+	//_ = json.Unmarshal(req, &emp)
 	if err := json.Unmarshal(req, &emp); err != nil {
 		log.Println("Error is : ", err)
 	}
@@ -169,8 +169,9 @@ func CreateDepartment(w http.ResponseWriter, r *http.Request) {
 	dept.DeptId = uuid2.NewString()
 	fmt.Println(dept)
 	_, err := Db.Exec("insert into department (ID, NAME) values (?,?)", dept.DeptId, dept.DeptName)
-	fmt.Println("error" + err.Error())
+	//fmt.Println("error" + err.Error())
 	if err != nil {
+		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = io.WriteString(w, "Some error")
 	}

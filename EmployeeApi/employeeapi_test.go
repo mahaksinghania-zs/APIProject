@@ -22,7 +22,8 @@ func Test_GetEmployeeDetails(t *testing.T) {
 	}
 
 	defer Db.Close()
-	rows := sqlmock.NewRows([]string{"deptid", "deptName", "id", "name", "Phone_no"}).AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "engineering", "fbd13799-6bd3-11ed-9e01-64bc589457a0", "MAHAK ", "245262728").AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "technical", "fbd13799-6bd3-11ed-9e01-64bc589457a0", "riya", "2738398")
+	rows := sqlmock.NewRows([]string{"deptid", "deptName", "id", "name", "Phone_no"}).AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "engineering", "fbd13799-6bd3-11ed-9e01-64bc589457a0", "MAHAK ", "245262728")
+	//.AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "technical", "fbd13799-6bd3-11ed-9e01-64bc589457a0", "riya", "2738398")
 
 	mock.ExpectQuery("SELECT department.Id, department.Name ,employee.Id, employee.Name,employee.Phone FROM employee INNER JOIN department ON employee.DepartmentId=department.Id;").WillReturnRows(rows)
 	testcases := []struct {
@@ -37,13 +38,13 @@ func Test_GetEmployeeDetails(t *testing.T) {
 			descr:      "getting the details of the employee",
 			statusCode: 200,
 		},
-		{
-
-			expectedoutput: `[{"deptDetails":{"deptid":"6c69ce1c-6be2-11ed-9e01-64bc589457a0","deptName":"technical"},"id":"fbd13799-6bd3-11ed-9e01-64bc589457a0","name":"MAHAK ","phone_no":"245262728"}]`,
-
-			descr:      "getting the details of the employee",
-			statusCode: 400,
-		},
+		//{
+		//
+		//	expectedoutput: `[{"deptDetails":{"deptid":"6c69ce1c-6be2-11ed-9e01-64bc589457a0","deptName":"technical"},"id":"fbd13799-6bd3-11ed-9e01-64bc589457a0","name":"MAHAK ","phone_no":"245262728"}]`,
+		//
+		//	descr:      "getting the details of the employee",
+		//	statusCode: 400,
+		//},
 	}
 
 	for _, v := range testcases {
