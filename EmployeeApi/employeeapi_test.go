@@ -218,7 +218,7 @@ func Test_CreateEmployee(t *testing.T) {
 	defer Db.Close()
 	//rows := sqlmock.NewRows([]string{"deptid", "deptName"}).AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "engineering")
 
-	mock.ExpectExec("insert into employee").WithArgs(sqlmock.AnyArg(), "fbd13799-6bd3-11ed-9e01-64bc589457a0", "MAHAK ", "245262728").
+	mock.ExpectExec("insert into employee").WithArgs(sqlmock.AnyArg(), "Mahak", "6c69ce1c-6be2-11ed-9e01-64bc589457a0", "245262728").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	//mock.ExpectQuery("insert into employee (Id, NAME,DepartmentID,PHONE) values (,?,?,?)\", emp.Name, emp.DeptDetails.DeptId, emp.PhoneNo").WillReturnRows(rows)
@@ -251,7 +251,7 @@ func Test_CreateEmployee(t *testing.T) {
 	}
 
 	for _, tc := range testcases {
-		val, _ := json.Marshal(tc.input) //go to json
+		val, _ := json.Marshal(tc.input)
 		req, err := http.NewRequest("POST", "/employeee", bytes.NewReader(val))
 		if err != nil {
 			t.Errorf(err.Error())
@@ -262,25 +262,24 @@ func Test_CreateEmployee(t *testing.T) {
 		var actRes Employee
 		_ = json.Unmarshal(response.Body.Bytes(), &actRes) //json to go
 		assert.Equal(t, tc.statusCode, response.Code)
-		t.Error(actRes)
+		//t.Error(actRes)
 		//assert.Equal(t, tc.expectedOutput, actRes)
 
 	}
 
 }
 
-func TestCreateDepartment(t *testing.T) {
+func Test_CreateDepartment(t *testing.T) {
+
 	Db, mock, err = sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
 	defer Db.Close()
-	//rows := sqlmock.NewRows([]string{"deptid", "deptName"}).AddRow("6c69ce1c-6be2-11ed-9e01-64bc589457a0", "engineering")
 
-	mock.ExpectBegin()
-	mock.ExpectExec("insert into employee").WithArgs(sqlmock.AnyArg(), "engineering", "fbd13799-6bd3-11ed-9e01-64bc589457a0", "MAHAK ", "245262728").WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
+	mock.ExpectExec("insert into department").WithArgs(sqlmock.AnyArg(), "engineering").
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	//mock.ExpectQuery("insert into employee (Id, NAME,DepartmentID,PHONE) values (,?,?,?)\", emp.Name, emp.DeptDetails.DeptId, emp.PhoneNo").WillReturnRows(rows)
 
@@ -291,6 +290,7 @@ func TestCreateDepartment(t *testing.T) {
 		statusCode     int
 	}{
 		{"All entries are present",
+
 			Department{
 				"6c69ce1c-6be2-11ed-9e01-64bc589457a0",
 				"engineering",
@@ -300,23 +300,25 @@ func TestCreateDepartment(t *testing.T) {
 				"6c69ce1c-6be2-11ed-9e01-64bc589457a0",
 				"engineering",
 			},
-			200,
+			201,
 		},
 	}
 
 	for _, tc := range testcases {
-		val, _ := json.Marshal(tc.input) //go to json
-		req, err := http.NewRequest(http.MethodPost, "/department", bytes.NewBuffer(val))
+		val, _ := json.Marshal(tc.input)
+		req, err := http.NewRequest("POST", "/department", bytes.NewReader(val))
 		if err != nil {
 			t.Errorf(err.Error())
 		}
 		//response recorder
-		resRec := httptest.NewRecorder()
-		CreateDepartment(resRec, req)
-		var actRes Department
-		_ = json.Unmarshal(resRec.Body.Bytes(), &actRes) //json to go
-		assert.Equal(t, tc.statusCode, resRec.Code)
+		response := httptest.NewRecorder()
+		CreateDepartment(response, req)
+		var actRes Employee
+		_ = json.Unmarshal(response.Body.Bytes(), &actRes) //json to go
+		assert.Equal(t, tc.statusCode, response.Code)
+		//t.Error(actRes)
 		//assert.Equal(t, tc.expectedOutput, actRes)
 
 	}
+
 }

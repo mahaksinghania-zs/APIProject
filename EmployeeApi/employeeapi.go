@@ -41,7 +41,7 @@ func GetEmployeeDetails(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer result.Close()
+	//;
 	for result.Next() {
 		var employee Employee
 		err := result.Scan(&employee.DeptDetails.DeptId, &employee.DeptDetails.DeptName, &employee.Id, &employee.Name, &employee.PhoneNo)
@@ -81,6 +81,7 @@ func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 	}
 
 	emp.Id = uuid2.NewString()
+
 	_, err := Db.Exec("insert into employee (ID, NAME,DepartmentID,PHONE) values (?,?,?,?)", emp.Id, emp.Name, emp.DeptDetails.DeptId,
 		emp.PhoneNo)
 	if err != nil {
@@ -125,7 +126,7 @@ func GetDepartmentDetails(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer result.Close()
+	//defer result.Close()
 	for result.Next() {
 		var dept Department
 		err := result.Scan(&dept.DeptId, &dept.DeptName)
@@ -166,8 +167,9 @@ func CreateDepartment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dept.DeptId = uuid2.NewString()
+	fmt.Println(dept)
 	_, err := Db.Exec("insert into department (ID, NAME) values (?,?)", dept.DeptId, dept.DeptName)
-	fmt.Println("error")
+	fmt.Println("error" + err.Error())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = io.WriteString(w, "Some error")
