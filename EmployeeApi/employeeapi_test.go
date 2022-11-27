@@ -18,7 +18,7 @@ func Test_GetEmployeeDetails(t *testing.T) {
 
 	Db, mock, err = sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
@@ -73,7 +73,7 @@ func Test_GetEmployeeDetailsById(t *testing.T) {
 	//uuid := "6c69ce1c-6be2-11ed-9e01-64bc589457a0"
 	Db, mock, err = sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		t.Errorf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
@@ -123,7 +123,7 @@ func Test_GetDepartmentDetailsById(t *testing.T) {
 	//uuid := "6c69ce1c-6be2-11ed-9e01-64bc589457a0"
 	Db, mock, err = sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		t.Errorf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
@@ -163,7 +163,7 @@ func Test_GetDepartmentDetails(t *testing.T) {
 
 	Db, mock, err = sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
@@ -213,7 +213,7 @@ func Test_CreateEmployee(t *testing.T) {
 
 	Db, mock, err = sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
@@ -274,7 +274,7 @@ func Test_CreateDepartment(t *testing.T) {
 
 	Db, mock, err = sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		t.Errorf("an error '%s' was not expected ", err)
 	}
 
 	defer Db.Close()
